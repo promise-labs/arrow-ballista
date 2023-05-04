@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ballista-executor
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ballista-executor
+  template:
+    metadata:
+      labels:
+        app: ballista-executor
+        ballista-cluster: ballista
+    spec:
+      initContainers:
+        - name: check-scheduler
+          image: busybox:1.32.0
+          env:
+            - name: SCHEDULER_HOST
+              value: ballista-scheduler.default
+            - name: SCHEDULER_PORT
+              value: "50050"
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              while true; do
+                nc -z "${SCHEDULER_HOST}" "${SCHEDULER_PORT}"
+                if [ $? -eq 0 ]; then
+                  echo "Scheduler service is up"
+                  exit 0
+                fi
+                echo "Scheduler service is not up yet"
+                sleep 1
+              done
+      containers:
+        - name: ballista-executor
+          image: ghcr.io/promise-labs/arrow-ballista-executor
+          args:
+            - "--bind-port=50051"
+            - "--scheduler-host=ballista-scheduler"
+            - "--scheduler-port=50050"
+          ports:
+            - containerPort: 50051
+              name: flight
+          volumeMounts:
+            - mountPath: data
+              subPath: data
+              name: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: data-pv-claim

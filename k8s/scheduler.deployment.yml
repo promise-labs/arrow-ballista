@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ballista-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ballista-scheduler
+  template:
+    metadata:
+      labels:
+        app: ballista-scheduler
+        ballista-cluster: ballista
+    spec:
+      containers:
+        - name: ballista-scheduler
+          image: ghcr.io/promise-labs/arrow-ballista-scheduler
+          args: ["--bind-port=50050"]
+          ports:
+            - containerPort: 50050
+              name: flight
+            - containerPort: 80
+              name: webui
+          volumeMounts:
+            - mountPath: data
+              subPath: data
+              name: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: data-pv-claim
