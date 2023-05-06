@@ -21,7 +21,15 @@ build:
       context: .
       docker:
         dockerfile: dev/docker/ballista-benchmarks.Dockerfile
+    - image: ghcr.io/promise-labs/arrow-ballista-playground
+      context: .
+      docker:
+        dockerfile: kube/playground/Dockerfile
+      sync:
+        manual:
+          - src: ./kube/playground/**/*
+            dest: /app
 manifests:
   kustomize:
     paths:
-      - k8s
+      - kube/k8s

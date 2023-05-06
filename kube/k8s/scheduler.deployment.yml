@@ -22,6 +22,9 @@ spec:
               name: flight
             - containerPort: 80
               name: webui
+          envFrom:
+            - secretRef:
+                name: aws-secrets
           volumeMounts:
             - mountPath: data
               subPath: data

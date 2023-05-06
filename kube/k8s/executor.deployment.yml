@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: ballista-executor
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: ballista-executor
@@ -43,6 +43,9 @@ spec:
           ports:
             - containerPort: 50051
               name: flight
+          envFrom:
+            - secretRef:
+                name: aws-secrets
           volumeMounts:
             - mountPath: data
               subPath: data
