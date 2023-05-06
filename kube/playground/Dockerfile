@@ -13,6 +13,6 @@ COPY ./kube/playground/Cargo.toml ./kube/playground/Cargo.lock ./
 COPY ./kube/playground/src /app/src
 
 # Build the project's dependencies
-RUN cargo build
+RUN cargo build --examples
 
 CMD ["tail", "-f", "/dev/null"]
