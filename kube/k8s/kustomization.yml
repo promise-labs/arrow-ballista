@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  deployment: ballista
+
+resources:
+  - executor.deployment.yml
+  - scheduler.deployment.yml
+  - benchmarks.deployment.yml
+  - playground.deployment.yml
+  - scheduler.service.yml
+  - benchmarks.pv.yml
+  - benchmarks.pvc.yml
+  - playground.pv.yml
+  - playground.pvc.yml

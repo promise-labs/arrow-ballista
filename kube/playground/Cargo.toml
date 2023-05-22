@@ -1,0 +1,31 @@
+[package]
+name = "ballista-client"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+
+[[example]]
+name = "cluster"
+path = "src/examples/cluster/main.rs"
+
+[[example]]
+name = "standalone"
+path = "src/examples/standalone/main.rs"
+required-features = ["ballista/standalone"]
+
+[dependencies]
+ballista = { git = "https://github.com/promise-labs/arrow-ballista", branch = "bog/skaffold-init", features = ["standalone", "s3"] }
+ballista-core = { git = "https://github.com/promise-labs/arrow-ballista", branch = "bog/skaffold-init", features = ["s3"] }
+datafusion = "23.0.0"
+datafusion-cli = "23.0.0"
+datafusion-proto = "23.0.0"
+tokio = { version = "1.0", features = [
+    "macros",
+    "rt",
+    "rt-multi-thread",
+    "sync",
+    "parking_lot",
+] }

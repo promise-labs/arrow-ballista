@@ -1,0 +1,35 @@
+apiVersion: skaffold/v4beta3
+kind: Config
+metadata:
+  name: ballista-skaffold
+build:
+  tagPolicy:
+    inputDigest: {}
+  local:
+    tryImportMissing: true
+    useBuildkit: true
+  artifacts:
+    - image: ghcr.io/promise-labs/arrow-ballista-scheduler
+      context: .
+      docker:
+        dockerfile: dev/docker/ballista-scheduler.Dockerfile
+    - image: ghcr.io/promise-labs/arrow-ballista-executor
+      context: .
+      docker:
+        dockerfile: dev/docker/ballista-executor.Dockerfile
+    - image: ghcr.io/promise-labs/arrow-ballista-benchmarks
+      context: .
+      docker:
+        dockerfile: dev/docker/ballista-benchmarks.Dockerfile
+    - image: ghcr.io/promise-labs/arrow-ballista-playground
+      context: .
+      docker:
+        dockerfile: kube/playground/Dockerfile
+      sync:
+        manual:
+          - src: ./kube/playground/**/*
+            dest: /app
+manifests:
+  kustomize:
+    paths:
+      - kube/k8s

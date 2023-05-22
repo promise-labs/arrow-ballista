@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ballista-playground
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ballista-playground
+  template:
+    metadata:
+      labels:
+        app: ballista-playground
+    spec:
+      containers:
+        - name: ballista-playground
+          image: ghcr.io/promise-labs/arrow-ballista-playground
+          args:
+            - "/bin/bash"
+            - "-c"
+            - "sleep infinity"
+          envFrom:
+            - secretRef:
+                name: aws-secrets
+          volumeMounts:
+            - mountPath: /data
+              subPath: data
+              name: playground
+      volumes:
+        - name: playground
+          persistentVolumeClaim:
+            claimName: playground-pv-claim
